@@ -1,0 +1,13 @@
+Package: ggsugar
+Title: Geoms and stats for drawing sugars
+Version: 0.0.0
+Authors@R: person("Hiren", "Joshi", email = "ggsugar@glycocode.com", role = c("aut", "cre"))
+Description: Grobs and geoms for drawing sugars
+Depends:
+		R (>= 3.2.2),
+		ggplot2(>= 1.0.0)
+Imports:
+		grid,
+		plyr
+License: MIT
+LazyData: true
