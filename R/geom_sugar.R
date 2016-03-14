@@ -1,4 +1,5 @@
 #' Draw sugars
+#' Required aes x,y,class
 #' @export
 geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
                           position = "identity",
