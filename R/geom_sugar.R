@@ -84,7 +84,7 @@ draw_galb13galnac = function(x,y,offset=0) {
 
 #' @export
 GeomSugar <- ggplot2::ggproto("GeomSugar", ggplot2::Geom,
-                        required_aes='x',
+                        required_aes=c('x','y','class'),
                         draw_panel = function(data, panel_scales, coord,offset=0) {
                           coords <- coord$transform(data, panel_scales)
                           draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
