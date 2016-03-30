@@ -4,6 +4,10 @@
 geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
                           position = "identity",
                           show.legend = NA, inherit.aes = TRUE,na.rm=T,offset=0,fill=NULL,...) {
+  if ( ! is.null(data) && inherit.aes ) {
+    message("geom_sugar will not inherit aesthetics from parent when data is provided")
+    inherit.aes = FALSE
+  }
   ggplot2::layer(
     data = data,
     mapping = mapping,
