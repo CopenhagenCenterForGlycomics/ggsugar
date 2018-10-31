@@ -3,3 +3,4 @@
 .RData
 pkg
 man
+*.tar.gz
