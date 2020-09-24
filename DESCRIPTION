@@ -6,7 +6,7 @@ Description: Grobs and geoms for drawing sugars
 Depends:
     R (>= 3.2.2),
     ggplot2(>= 1.0.0),
-    grImport2 (>= 0.2.0)
+    grImport2 (>= 0.1.2)
 Imports:
     grid,
     plyr
