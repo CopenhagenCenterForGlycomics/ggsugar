@@ -3,10 +3,13 @@
 #' @export
 geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
                           position = "identity",
-                          show.legend = NA, inherit.aes = TRUE,na.rm=T,offset=0,fill=NULL,...) {
+                          show.legend = NA, inherit.aes = TRUE,na.rm=T,offset=0,align="bottom",...) {
   if ( ! is.null(data) && inherit.aes ) {
     message("geom_sugar will not inherit aesthetics from parent when data is provided")
     inherit.aes = FALSE
+  }
+  if (! (align %in% c("center","centre","bottom"))) {
+    stop("Invalid align parameter to geom_sugar, must be one of 'center' or 'bottom'")
   }
   ggplot2::layer(
     data = data,
@@ -19,13 +22,21 @@ geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
     params = list(
       na.rm=na.rm,
       offset=offset,
-      fill=fill,
+      align=align,
       ...
     )
   )
 }
 
+#' List available sugars
+#' 
+supported_sugars <- function() {
+  ggsugar::glycans$nickname
+}
+
+
 generate_package_data = function() {
+  require('grConvert')
   svgs = list.files(path='sugar_svgs')
   template_sugars = setNames(lapply(svgs, function(svg) {
     grConvert::convertPicture(file.path('sugar_svgs',svg),'cairo.svg')
@@ -38,12 +49,24 @@ generate_package_data = function() {
       default.units = "native"
     )
   }),tolower(stringr::str_replace(svgs,'.svg','')))
-  usethis::use_data(template_sugars,internal=T)  
+  usethis::use_data(template_sugars,internal=T) 
+
+  glycans = read.delim('data/nicknames.tsv')
+  usethis::use_data(glycans)
+
 }
 
-draw_sugar = function(x,y,sugar,offset=0,size=1) {
+draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
   require(grImport2)
-  template_sugar = ggsugar:::template_sugars[[sugar]]
+
+  nicnknames = ggsugar::glycans
+  nicnknames$nickname = tolower(nicnknames$nickname)
+
+  if (tolower(sugar) %in% nicnknames$nickname) {
+    sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
+  }
+
+  template_sugar = ggsugar:::template_sugars[[tolower(sugar)]]
 
 #      align_grid = grid::rectGrob(
 #        x, grid::unit(y,"native") + grid::unit(offset * .pt,"mm"),
@@ -65,7 +88,7 @@ draw_sugar = function(x,y,sugar,offset=0,size=1) {
         y=grid::unit(y,"native")+ grid::unit(offset * .pt,"mm"),
         width=grid::unit(0.5*size * .pt ,"mm"),
         height=grid::unit(0.5*size * .pt,"mm"),
-        just=c("centre","bottom")
+        just=c("centre",align)
       )
       
       sugar_grob = grid::gTree(vp=sugar_viewport,children = grid::gList(template_sugar))
@@ -82,10 +105,10 @@ draw_sugar = function(x,y,sugar,offset=0,size=1) {
 #' @export
 GeomSugar <- ggplot2::ggproto("GeomSugar", ggplot2::Geom,
                         required_aes=c('x','y','class'),
-                        draw_panel = function(data, panel_scales, coord,offset=0,size=1) {
+                        draw_panel = function(data, panel_scales, coord,offset=0,size=1,align="bottom") {
                           coords <- coord$transform(data, panel_scales)
                           draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
-                          results = draw_sugar_vec(coords$x,coords$y,coords$class,offset,size)
+                          results = draw_sugar_vec(coords$x,coords$y,coords$class,offset,size,align)
                           do.call(grid::gList,results)
                         }
 )
