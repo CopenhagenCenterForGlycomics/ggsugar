@@ -10,16 +10,17 @@ p + geom_point()
 ```
 
 ```R
-p + geom_sugar(class='galnac')
+p + geom_sugar(sugar='galnac')
 ```
 
 ```R
-p + geom_sugar(class='man',position='jitter')
+p + geom_sugar(sugar='man',position='jitter')
 ```
 
+```R
+p <- ggplot(data.frame(x=c('T','Tn','chondroitin'),y=rep(1,3)))+geom_sugar(aes(x,y),sugar="o-glc",size=4,align="centre")+theme_minimal()+theme(axis.text.x=element_sugar())
+```
 
 ## TO-DO
 
-* The definitions for the shapes for the glycans are currently hardcoded. We would like to be
-able to use a definition SVG file, and read path definitions from there, which would then be drawn natively using `grid` graphics in R.
 * We should have a basic layout algorithm working, as well as basic IUPAC condensed sequence reading, so that we can plug in whatever sequence we like.

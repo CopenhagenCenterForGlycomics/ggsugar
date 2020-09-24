@@ -1,5 +1,5 @@
 #' Draw sugars
-#' Required aes x,y,class
+#' Required aes x,y,sugar
 #' @export
 geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
                           position = "identity",
@@ -109,11 +109,11 @@ draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
 
 #' @export
 GeomSugar <- ggplot2::ggproto("GeomSugar", ggplot2::Geom,
-                        required_aes=c('x','y','class'),
+                        required_aes=c('x','y','sugar'),
                         draw_panel = function(data, panel_scales, coord,offset=0,size=1,align="bottom") {
                           coords <- coord$transform(data, panel_scales)
                           draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
-                          results = draw_sugar_vec(coords$x,coords$y,coords$class,offset,size,align)
+                          results = draw_sugar_vec(coords$x,coords$y,coords$sugar,offset,size,align)
                           do.call(grid::gList,results)
                         }
 )
