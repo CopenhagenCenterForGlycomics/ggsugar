@@ -56,9 +56,7 @@ generate_package_data = function() {
 
 }
 
-draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
-  require(grImport2)
-
+get_template_sugar = function(sugar) {
   nicnknames = ggsugar::glycans
   nicnknames$nickname = tolower(nicnknames$nickname)
 
@@ -68,6 +66,13 @@ draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
 
   template_sugar = ggsugar:::template_sugars[[tolower(sugar)]]
 
+  return(template_sugar)
+}
+
+draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
+  require(grImport2)
+
+  template_sugar = get_template_sugar(sugar)
 #      align_grid = grid::rectGrob(
 #        x, grid::unit(y,"native") + grid::unit(offset * .pt,"mm"),
 #        width = grid::unit(0.5*size * .pt ,"mm"),
