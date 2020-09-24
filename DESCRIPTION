@@ -5,7 +5,8 @@ Authors@R: person("Hiren", "Joshi", email = "ggsugar@glycocode.com", role = c("a
 Description: Grobs and geoms for drawing sugars
 Depends:
     R (>= 3.2.2),
-    ggplot2(>= 1.0.0)
+    ggplot2(>= 1.0.0),
+    grImport2 (>= 0.2.0)
 Imports:
     grid,
     plyr

@@ -25,75 +25,56 @@ geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
   )
 }
 
-draw_sugar = function(x,y,sugar,offset,fill=NULL) {
-  args = list(x=x,y=y,offset=offset)
-  if (! is.na(fill)) {
-    args[['fill']] = fill
-  }
-  func = NULL
-
-  if (sugar == "galnac") {
-    func = draw_galnac
-  }
-  if (sugar == "man") {
-    func = draw_man
-  }
-  if (sugar == "gal(b1-3)galnac") {
-    func = draw_galb13galnac
-  }
-
-  if ( ! is.null(func) ) {
-    return(do.call(func,args))
-  }
+generate_package_data = function() {
+  svgs = list.files(path='sugar_svgs')
+  template_sugars = setNames(lapply(svgs, function(svg) {
+    grConvert::convertPicture(file.path('sugar_svgs',svg),'cairo.svg')
+    grImport2::pictureGrob(grImport2::readPicture('cairo.svg'),
+      0,
+      0.5,
+      width = 1,
+      height = 1,
+      just=c("left","center"),
+      default.units = "native"
+    )
+  }),tolower(stringr::str_replace(svgs,'.svg','')))
+  usethis::use_data(template_sugars,internal=T)  
 }
 
-draw_man = function(x,y,offset=0,fill='green') {
-  grid::circleGrob(
-    x, grid::unit(y,"native") + grid::unit(offset * .pt,"mm"),
-    r = grid::unit(0.5 * .pt ,"mm"),
-    default.units = "native",
-    gp = grid::gpar(
-      col = ggplot2::alpha("black", 1),
-      fill = ggplot2::alpha(fill, 1),
-      lwd = 0.5 * .pt,
-      lty = 1,
-      lineend = "butt"
-    )
-  )
-}
+draw_sugar = function(x,y,sugar,offset=0,size=1) {
+  require(grImport2)
+  template_sugar = ggsugar:::template_sugars[[sugar]]
 
-draw_galnac = function(x,y,offset=0,fill='yellow') {
-  grid::rectGrob(
-    x, grid::unit(y,"native") + grid::unit(offset * .pt,"mm"),
-    width = grid::unit(1 * .pt ,"mm"),
-    height = grid::unit(1 * .pt,"mm"),
-    default.units = "native",
-    just = c("centre", "centre"),
-    gp = grid::gpar(
-      col = ggplot2::alpha("black", 1),
-      fill = ggplot2::alpha(fill, 1),
-      lwd = 0.5 * .pt,
-      lty = 1,
-      lineend = "butt"
-    )
-  )
-}
-
-draw_galb13galnac = function(x,y,offset=0,fill='yellow') {
-  galnac = draw_galnac(x,y,offset,fill)
-  gal = grid::circleGrob(
-    x, grid::unit(y,"native") + grid::unit((offset+1) * .pt,"mm"),
-    r = grid::unit(0.5 * .pt ,"mm"),
-    default.units = "native",
-    gp = grid::gpar(
-      col = ggplot2::alpha("black", 1),
-      fill = ggplot2::alpha(fill, 1),
-      lwd = 0.5 * .pt,
-      lty = 1,
-      lineend = "butt"
-    )
-  )
-  grid::gList(gal,galnac)
+#      align_grid = grid::rectGrob(
+#        x, grid::unit(y,"native") + grid::unit(offset * .pt,"mm"),
+#        width = grid::unit(0.5*size * .pt ,"mm"),
+#        height = grid::unit(0.5*size * .pt,"mm"),
+#        default.units = "native",
+#        just = c("centre", "bottom"),
+#        gp = grid::gpar(
+#          col = ggplot2::alpha("black", 0.1),
+#          fill = ggplot2::alpha("red", 0.1),
+#          lwd = 0.5 * .pt,
+#          lty = 1,
+#          lineend = "butt"
+#        )
+#      )
+      
+      sugar_viewport = grid::viewport(
+        x=x,
+        y=grid::unit(y,"native")+ grid::unit(offset * .pt,"mm"),
+        width=grid::unit(0.5*size * .pt ,"mm"),
+        height=grid::unit(0.5*size * .pt,"mm"),
+        just=c("centre","bottom")
+      )
+      
+      sugar_grob = grid::gTree(vp=sugar_viewport,children = grid::gList(template_sugar))
+      
+      # If you want to add an alignment grid
+      # uncomment the above align_grid and return the statement below
+      # grid::gList(align_grid,sugar_grob)
+      
+      sugar_grob
 }
 
 .pt <- 72.27 / 25.4
@@ -101,10 +82,10 @@ draw_galb13galnac = function(x,y,offset=0,fill='yellow') {
 #' @export
 GeomSugar <- ggplot2::ggproto("GeomSugar", ggplot2::Geom,
                         required_aes=c('x','y','class'),
-                        draw_panel = function(data, panel_scales, coord,offset=0,fill=NULL) {
+                        draw_panel = function(data, panel_scales, coord,offset=0,size=1) {
                           coords <- coord$transform(data, panel_scales)
                           draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
-                          results = draw_sugar_vec(coords$x,coords$y,coords$class,offset,ifelse(is.null(fill),NA,fill))
+                          results = draw_sugar_vec(coords$x,coords$y,coords$class,offset,size)
                           do.call(grid::gList,results)
                         }
 )
