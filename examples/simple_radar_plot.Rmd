@@ -1,0 +1,52 @@
+# Simple Radar Plot
+
+```{r}
+library(ggplot2)
+coord_radar <- function (theta = "x", start = 0, direction = 1) 
+{
+ theta <- match.arg(theta, c("x", "y"))
+ r <- if (theta == "x") 
+        "y"
+      else "x"
+ ggproto("CoordRadar", CoordPolar, theta = theta, r = r, start = start, 
+      direction = sign(direction),
+      is_linear = function(coord) TRUE)
+}
+```
+
+
+```{r}
+plot_glycans = c('sialyl-t','tn','t','extened-fng-o-fuc','heparan','n-linked-sialyl-tetraantennary')
+plot_data = data.frame(
+  sugar=rep(plot_glycans,2),
+  experiment=c( rep('first',length(plot_glycans)), rep('second',length(plot_glycans)) ),
+  measurement= c( rnorm(length(plot_glycans),10,sd=5), rnorm(length(plot_glycans),20,sd=5))
+)
+plot_data = plot_data[order(plot_data$sugar,plot_data$experiment),] 
+
+plot_data = rbind(plot_data, subset(plot_data, sugar == plot_data$sugar[1] ))
+
+plot_data
+```
+```{r}
+basic_plot <- ggplot(plot_data, aes(x = sugar, y = measurement)) + 
+  scale_y_continuous(breaks=seq(0,30,by=10),limits=c(0,30))+
+  geom_point(aes(group = experiment,color = experiment))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  ggtitle("My first basic plot")
+
+basic_plot
+```
+
+```{r}
+advanced_plot = basic_plot+
+  geom_path(aes(group = experiment,color = experiment))+
+  annotate("text", x = plot_data$sugar[1], y = seq(0,30,by=10), label = seq(0,30,by=10), hjust = 1)+
+  coord_radar()+
+  theme(axis.text.x = element_sugar(align="center"))+
+  theme(axis.text.y=element_blank())+
+  ggtitle('My first advanced plot')
+
+advanced_plot
+```
