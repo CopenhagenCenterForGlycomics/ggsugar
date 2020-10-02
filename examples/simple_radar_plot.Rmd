@@ -40,6 +40,7 @@ basic_plot
 ```
 
 ```{r}
+library(ggsugar)
 advanced_plot = basic_plot+
   geom_path(aes(group = experiment,color = experiment))+
   annotate("text", x = plot_data$sugar[1], y = seq(0,30,by=10), label = seq(0,30,by=10), hjust = 1)+

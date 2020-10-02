@@ -42,7 +42,8 @@ get_template_sugar = function(sugar) {
     sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
   }
 
-  template_sugar = ggsugar:::template_sugars[tolower(sugar)]
+  lower_names = setNames(ggsugar:::template_sugars, tolower(names(ggsugar:::template_sugars)))
+  template_sugar = lower_names[tolower(sugar)]
 
   return(template_sugar)
 }
