@@ -53,7 +53,6 @@ v8_ctx = NULL
 get_v8 <- function() {
   if (is.null(v8_ctx)) {
     v8_ctx <- v8()
-    message(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));
     v8_ctx$source(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));    
   }
   v8_ctx
