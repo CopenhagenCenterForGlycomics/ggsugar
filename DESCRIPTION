@@ -1,4 +1,4 @@
-ackage: ggsugar
+Package: ggsugar
 Title: Geoms and stats for drawing sugars
 Version: 0.2.6
 Authors@R: person("Hiren", "Joshi", email = "ggsugar@glycocode.com", role = c("aut", "cre"))
