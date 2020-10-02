@@ -48,11 +48,21 @@ get_template_sugar = function(sugar) {
 }
 
 
+v8_ctx = NULL
+
+get_v8 <- function() {
+  if (is.null(v8_ctx)) {
+    v8_ctx <- v8()
+    message(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));
+    v8_ctx$source(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));    
+  }
+  v8_ctx
+}
+
 if (require('V8',character.only = TRUE) && require('grConvert',character.only = TRUE)) {
-  v8_ctx <- v8()
-  v8_ctx$source(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));
 
   seq_to_svg <- function(seq) {
+    v8_ctx = get_v8();
     v8_ctx$assign("seq",seq);
     v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg',res) )",sep=""));
     retval=svg;
