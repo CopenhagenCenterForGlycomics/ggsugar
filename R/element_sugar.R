@@ -41,7 +41,7 @@ element_grob.element_sugar_custom <- function(element,label,x, y, ...)  {
     y = rep(unit(0.5,"npc"),length(x))
   }
   sugars = get_template_sugar(label)
-  grid::gTree(children=do.call(gList, sapply(1:length(x),function(idx) draw_element_sugar(sugars[[idx]],x[idx],y[idx],align=element$align,size=element$size),simplify=F) ), cl = "custom_sugar")
+  grid::gTree(children=do.call(grid::gList, sapply(1:length(x),function(idx) draw_element_sugar(sugars[[idx]],x[idx],y[idx],align=element$align,size=element$size),simplify=F) ), cl = "custom_sugar")
 }
 
 # gTrees don't know their size and ggplot would squash it, so give it room
