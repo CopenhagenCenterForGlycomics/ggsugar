@@ -34,7 +34,7 @@ supported_sugars <- function() {
   ggsugar::glycans$nickname
 }
 
-get_template_sugar = function(sugar) {
+get_template_sugar_pre_gen = function(sugar) {
   nicnknames = ggsugar::glycans
   nicnknames$nickname = tolower(nicnknames$nickname)
 
@@ -48,10 +48,36 @@ get_template_sugar = function(sugar) {
   return(template_sugar)
 }
 
+get_template_sugar_dynamic <- function(sugar) {
+
+  nicnknames = ggsugar::glycans
+  nicnknames$nickname = tolower(nicnknames$nickname)
+
+  if (length(intersect(tolower(sugar),nicnknames$nickname)) > 0) {
+    sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
+  }
+
+  svg = seq_to_svg(sugar)
+  as.vector(lapply(svg, function(svgdata) {
+    input_svg = tempfile("input",fileext=".svg")
+    cat(svgdata,file=input_svg,sep="\n")
+    cairo_svg = tempfile("cairo",fileext=".svg")
+    suppressMessages(grConvert::convertPicture(input_svg,cairo_svg))
+    picgrob = grImport2::pictureGrob(grImport2::readPicture(cairo_svg),
+      0,
+      0.5,
+      width = 1,
+      height = 1,
+      just=c("left","center"),
+      default.units = "native"
+    )
+    picgrob
+  }))
+}
 
 v8_ctx = NULL
 
-get_v8 <- function() {
+get_v8 = function() {
   if (is.null(v8_ctx)) {
     v8_ctx <- v8()
     v8_ctx$source(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));    
@@ -59,44 +85,21 @@ get_v8 <- function() {
   v8_ctx
 }
 
-if (require('V8',character.only = TRUE) && require('grConvert',character.only = TRUE)) {
+seq_to_svg = function(seq) {
+  v8_ctx = get_v8();
+  v8_ctx$assign("seq",seq);
+  v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg',res) )",sep=""));
+  retval=svg;
+  rm(svg,envir=.GlobalEnv);
+  retval
+}
 
-  seq_to_svg <- function(seq) {
-    v8_ctx = get_v8();
-    v8_ctx$assign("seq",seq);
-    v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg',res) )",sep=""));
-    retval=svg;
-    rm(svg,envir=.GlobalEnv);
-    retval
+get_template_sugar <- function(sugar) {
+  if (require('V8',character.only = TRUE) && require('grConvert',character.only = TRUE)) {
+    get_template_sugar_dynamic(sugar)
+  } else {
+    get_template_sugar_pre_gen(sugar)
   }
-
-  get_template_sugar <- function(sugar) {
-
-    nicnknames = ggsugar::glycans
-    nicnknames$nickname = tolower(nicnknames$nickname)
-
-    if (length(intersect(tolower(sugar),nicnknames$nickname)) > 0) {
-      sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
-    }
-
-    svg = seq_to_svg(sugar)
-    as.vector(lapply(svg, function(svgdata) {
-      input_svg = tempfile("input",fileext=".svg")
-      cat(svgdata,file=input_svg,sep="\n")
-      cairo_svg = tempfile("cairo",fileext=".svg")
-      suppressMessages(grConvert::convertPicture(input_svg,cairo_svg))
-      picgrob = grImport2::pictureGrob(grImport2::readPicture(cairo_svg),
-        0,
-        0.5,
-        width = 1,
-        height = 1,
-        just=c("left","center"),
-        default.units = "native"
-      )
-      picgrob
-    }))
-  }
-
 }
 
 
