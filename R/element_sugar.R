@@ -45,6 +45,7 @@ element_grob.element_sugar_custom <- function(element,label,x, y, ...)  {
 }
 
 # gTrees don't know their size and ggplot would squash it, so give it room
+#' @export
 grobHeight.custom_sugar = heightDetails.custom_sugar = function(x, ...) {
   do.call(max,sapply(x$children,function(kid) kid$sugar_height ,simplify=F))
 }
