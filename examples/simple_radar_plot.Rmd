@@ -44,7 +44,7 @@ advanced_plot = basic_plot+
   geom_path(aes(group = experiment,color = experiment))+
   annotate("text", x = plot_data$sugar[1], y = seq(0,30,by=10), label = seq(0,30,by=10), hjust = 1)+
   coord_radar()+
-  theme(axis.text.x = element_sugar(align="center"))+
+  theme(axis.text.x = element_sugar(align="center",size=4))+
   theme(axis.text.y=element_blank())+
   ggtitle('My first advanced plot')
 
