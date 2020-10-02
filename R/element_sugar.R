@@ -27,6 +27,7 @@ draw_element_sugar = function(template_sugar,x,y,align="bottom",size=2) {
 }
 
 # returns a gTree with two children: the text label, and a rasterGrob below
+#' @export
 element_grob.element_sugar_custom <- function(element,label,x, y, ...)  {
   if (class(x) != 'unit' && class(label) == 'unit') {
     temp_labels = x
