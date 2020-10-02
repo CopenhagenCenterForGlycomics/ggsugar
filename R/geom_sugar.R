@@ -29,7 +29,7 @@ geom_sugar <- function(mapping = NULL, data = NULL, stat = "identity",
 }
 
 #' List available sugars
-#' 
+#' @export
 supported_sugars <- function() {
   ggsugar::glycans$nickname
 }
