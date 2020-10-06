@@ -133,21 +133,20 @@ draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
 #        )
 #      )
       
-      sugar_viewport = grid::viewport(
-        x=x,
-        y=grid::unit(y,"native")+ grid::unit(offset * .pt,"mm"),
-        width=grid::unit(0.5*size * .pt ,"mm"),
-        height=grid::unit(0.5*size * .pt,"mm"),
-        just=c("centre",align)
-      )
-      
-      sugar_grob = grid::gTree(vp=sugar_viewport,children = grid::gList(template_sugar))
-      
-      # If you want to add an alignment grid
-      # uncomment the above align_grid and return the statement below
-      # grid::gList(align_grid,sugar_grob)
-      
-      sugar_grob
+  sugar_viewport = grid::viewport(
+    x=x,
+    y=grid::unit(y,"native")+ grid::unit(offset * .pt,"mm"),
+    width=grid::unit(0.5*size * .pt ,"mm"),
+    height=grid::unit(0.5*size * .pt,"mm"),
+    just=c("centre",align)
+  )
+  sugar_grob = grid::gTree(vp=sugar_viewport,children = grid::gList(template_sugar[[sugar]]))
+  
+  # If you want to add an alignment grid
+  # uncomment the above align_grid and return the statement below
+  # grid::gList(align_grid,sugar_grob)
+  
+  sugar_grob
 }
 
 .pt <- 72.27 / 25.4
