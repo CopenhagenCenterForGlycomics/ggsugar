@@ -42,11 +42,12 @@ get_template_sugar_pre_gen = function(sugar) {
     sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
   }
 
-  lower_names = setNames(ggsugar:::template_sugars, tolower(names(ggsugar:::template_sugars)))
+  lower_names = setNames(template_sugars, tolower(names(template_sugars)))
   template_sugar = lower_names[tolower(sugar)]
 
   return(template_sugar)
 }
+
 
 get_template_sugar_dynamic <- function(sugar) {
 
@@ -79,7 +80,7 @@ v8_ctx = NULL
 
 get_v8 = function() {
   if (is.null(v8_ctx)) {
-    v8_ctx <- v8()
+    v8_ctx <- V8::v8()
     v8_ctx$source(system.file("sviewer-headless.bundle.js", package = "ggsugar", mustWork = TRUE));    
   }
   v8_ctx
@@ -95,7 +96,7 @@ seq_to_svg = function(seq) {
 }
 
 get_template_sugar <- function(sugar) {
-  if (require('V8',character.only = TRUE) && require('grConvert',character.only = TRUE)) {
+    if (requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE)) {
     get_template_sugar_dynamic(sugar)
   } else {
     get_template_sugar_pre_gen(sugar)
@@ -103,13 +104,11 @@ get_template_sugar <- function(sugar) {
 }
 
 
-
 generate_package_data = function() {
-  if (!(require('V8',character.only = TRUE) && require('grConvert',character.only = TRUE))) {
+  if (!(requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE))) {
     stop('V8 and grConvert packages need to be installed to generate package data')
   }
 
-  require('grConvert')
   glycans = read.delim('data/nicknames.tsv')
   template_sugars = unlist(sapply(glycans$sequence, function(seq) get_template_sugar(seq), simplify=F ),recursive=F)
   usethis::use_data(template_sugars,internal=T,overwrite=T) 
@@ -117,7 +116,6 @@ generate_package_data = function() {
 }
 
 draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
-  require(grImport2)
 
   template_sugar = get_template_sugar(sugar)
 #      align_grid = grid::rectGrob(

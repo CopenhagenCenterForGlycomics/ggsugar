@@ -12,7 +12,8 @@ Imports:
     plyr
 Suggests:
     grConvert (>= 0.1.0),
-    V8 (>= 3.2.0)
+    V8 (>= 3.2.0),
+    usethis
 License: MIT
 LazyData: true
 RoxygenNote: 7.1.0
