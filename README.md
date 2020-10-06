@@ -18,7 +18,7 @@ p + geom_sugar(sugar='man',position='jitter')
 ```
 
 ```R
-p <- ggplot(data.frame(x=c('T','Tn','chondroitin'),y=rep(1,3)))+geom_sugar(aes(x,y),sugar="glc",size=4,align="centre")+theme_minimal()+theme(axis.text.x=element_sugar())
+p <- ggplot(data.frame(x=c('T','Tn','chondroitin'),y=rep(1,3),sugar=c('gal(b1-3)galnac','glc','man')))+geom_sugar(aes(x,y,sugar=sugar),size=4,align="centre")+theme_minimal()+theme(axis.text.x=element_sugar())
 ```
 
 ## TO-DO

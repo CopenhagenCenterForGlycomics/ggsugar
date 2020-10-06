@@ -132,21 +132,22 @@ draw_sugar = function(x,y,sugar,offset=0,size=1,align="bottom") {
 #          lineend = "butt"
 #        )
 #      )
-      
-  sugar_viewport = grid::viewport(
-    x=x,
-    y=grid::unit(y,"native")+ grid::unit(offset * .pt,"mm"),
-    width=grid::unit(0.5*size * .pt ,"mm"),
-    height=grid::unit(0.5*size * .pt,"mm"),
-    just=c("centre",align)
-  )
-  sugar_grob = grid::gTree(vp=sugar_viewport,children = grid::gList(template_sugar[[sugar]]))
+  rendered = lapply(1:length(template_sugar), function(idx) {
+    sugar_viewport = grid::viewport(
+      x=x[idx],
+      y=grid::unit(y[idx],"native")+ grid::unit(offset * .pt,"mm"),
+      width=grid::unit(0.5*size * .pt ,"mm"),
+      height=grid::unit(0.5*size * .pt,"mm"),
+      just=c("centre",align)
+    )
+    sugar_grob = grid::gTree(vp=sugar_viewport,children = do.call(grid::gList,template_sugar[idx]))
+  })
   
   # If you want to add an alignment grid
   # uncomment the above align_grid and return the statement below
   # grid::gList(align_grid,sugar_grob)
   
-  sugar_grob
+  do.call(grid::gList,rendered)
 }
 
 .pt <- 72.27 / 25.4
@@ -156,8 +157,8 @@ GeomSugar <- ggplot2::ggproto("GeomSugar", ggplot2::Geom,
                         required_aes=c('x','y','sugar'),
                         draw_panel = function(data, panel_scales, coord,offset=0,size=1,align="bottom") {
                           coords <- coord$transform(data, panel_scales)
-                          draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
-                          results = draw_sugar_vec(coords$x,coords$y,coords$sugar,offset,size,align)
+                          #draw_sugar_vec = Vectorize(draw_sugar,SIMPLIFY=F)
+                          results = draw_sugar(coords$x,coords$y,coords$sugar,offset,size,align)
                           do.call(grid::gList,results)
                         }
 )
