@@ -95,6 +95,9 @@ seq_to_svg = function(seq) {
   retval
 }
 
+
+#' @importFrom grImport2 grid.picture
+#' @importFrom grImport2 grid.symbols
 get_template_sugar <- function(sugar) {
     if (requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE)) {
     get_template_sugar_dynamic(sugar)
