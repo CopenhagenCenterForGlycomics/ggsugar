@@ -89,9 +89,9 @@ get_v8 = function() {
 seq_to_svg = function(seq) {
   v8_ctx = get_v8();
   v8_ctx$assign("seq",seq);
-  v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg',res) )",sep=""));
-  retval=svg;
-  rm(svg,envir=.GlobalEnv);
+  v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg_temp',res) )",sep=""));
+  retval=get('svg_temp',envir=.GlobalEnv);
+  rm('svg_temp',envir=.GlobalEnv);
   retval
 }
 
