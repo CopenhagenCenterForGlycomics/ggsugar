@@ -5,3 +5,4 @@
 pkg
 man
 *.tar.gz
+dist

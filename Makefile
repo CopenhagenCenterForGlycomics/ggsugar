@@ -4,9 +4,13 @@
 # Roxygen uses the roxygen2 package, and will run automatically on check and all.
 
 BUILDDIR = pkg
+DISTDIR = dist
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
+
+$(DISTDIR):
+	mkdir -p $(DISTDIR)
 
 bump_minor:
 	$(eval VERSION := $(shell ./tools/convertversion.sh "minor"))
@@ -42,17 +46,25 @@ $(BUILDDIR)/R/%: R/%
 $(BUILDDIR)/src/%: src/%
 	cp -f $< $@
 
+$(BUILDDIR)/inst/%: inst/%
+	cp -f $< $@
+
+$(BUILDDIR)/data/%: data/%
+	cp -f $< $@
+
 $(BUILDDIR)/tests/%: tests/%
 	cp -rf $< $@
 
 $(BUILDDIR)/vignettes/%: vignettes/%
 	cp -f $< $@
 
-R_FILES := $(wildcard R/*.R)
+R_FILES := $(wildcard R/*.R R/*.rda)
 SRC_FILES := $(wildcard src/*) $(addprefix src/, $(COPY_SRC))
+INST_FILES := $(wildcard inst/*)
+DATA_FILES := $(wildcard data/*)
 VIGNETTE_FILES := $(wildcard vignettes/*)
 TEST_FILES := $(wildcard tests/*)
-PKG_FILES := $(BUILDDIR)/DESCRIPTION $(BUILDDIR)/NAMESPACE $(addprefix $(BUILDDIR)/,$(R_FILES)) $(addprefix $(BUILDDIR)/,$(SRC_FILES)) $(addprefix $(BUILDDIR)/,$(VIGNETTE_FILES)) $(addprefix $(BUILDDIR)/,$(TEST_FILES))
+PKG_FILES := $(BUILDDIR)/DESCRIPTION $(BUILDDIR)/NAMESPACE $(addprefix $(BUILDDIR)/,$(R_FILES)) $(addprefix $(BUILDDIR)/,$(SRC_FILES)) $(addprefix $(BUILDDIR)/,$(INST_FILES)) $(addprefix $(BUILDDIR)/,$(DATA_FILES)) $(addprefix $(BUILDDIR)/,$(VIGNETTE_FILES)) $(addprefix $(BUILDDIR)/,$(TEST_FILES))
 MAN_FILES := $(addprefix $(BUILDDIR)/,$(wildcard man/*))
 TARBALL_NAME := $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
@@ -64,32 +76,34 @@ $(BUILDDIR)/NAMESPACE: NAMESPACE
 
 package_directories:
 	mkdir -p $(BUILDDIR)/R
+	mkdir -p $(BUILDDIR)/inst
 	mkdir -p $(BUILDDIR)/src
+	mkdir -p $(BUILDDIR)/data
 	mkdir -p $(BUILDDIR)/man
 	mkdir -p $(BUILDDIR)/vignettes
 	mkdir -p $(BUILDDIR)/tests
- 
+
 .PHONY: tarball install check clean build DESCRIPTION-vars package_directories
  
-$(PKG_NAME)_$(PKG_VERSION).tar.gz: package_directories $(PKG_FILES) package-documentation
+$(PKG_NAME)_$(PKG_VERSION).tar.gz: package_directories $(DISTDIR) $(PKG_FILES) package-documentation
 	@echo $(PKG_NAME)_$(PKG_VERSION).tar.gz
-	R CMD build $(BUILDDIR)
+	Rscript -e "devtools::build(pkg='$(BUILDDIR)',path='$(DISTDIR)')"
 
 check: DESCRIPTION-vars $(PKG_NAME)_$(PKG_VERSION).tar.gz
-	R CMD check $(PKG_NAME)_$(PKG_VERSION).tar.gz
- 
-build: DESCRIPTION-vars $(PKG_NAME)_$(PKG_VERSION).tar.gz
-	R CMD INSTALL --build $(PKG_NAME)_$(PKG_VERSION).tar.gz
- 
+	Rscript e "devtools::check(pkg='$(BUILDDIR)')"
+
+build: DESCRIPTION-vars $(DISTDIR) $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	Rscript -e "devtools::build(pkg='$(BUILDDIR)',path='$(DISTDIR)')"
+
 install: DESCRIPTION-vars $(PKG_NAME)_$(PKG_VERSION).tar.gz
-	R CMD INSTALL $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	Rscript -e "devtools::install(pkg='$(BUILDDIR)')"
 
 NAMESPACE: $(R_FILES)
-	Rscript -e "library(roxygen2);roxygenize('.',roclets=c('namespace'))"
+	Rscript -e "devtools::document(pkg='$(BUILDDIR)')"
 
 .PHONY: package-documentation documentation
 man documentation:
-	Rscript -e "library(roxygen2);roxygenize('.',roclets=c('rd'))"	
+	Rscript -e "devtools::document(pkg='$(BUILDDIR)')"	
 package-documentation: documentation
 	cp -f man/* $(BUILDDIR)/man/
 
