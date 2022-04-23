@@ -26,7 +26,7 @@ jobs:
           ./node_modules/.bin/webpack
           cp dist/sviewer-headless.bundle.js ../../inst/sviewer-headless.js
 
-      - name: AddBuiltFile
+      - name: AddBuiltWebpackFile
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Automated sviewer build
