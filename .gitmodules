@@ -1,0 +1,3 @@
+[submodule "js/sviewer"]
+	path = js/sviewer
+	url = https://github.com/CopenhagenCenterForGlycomics/sviewer
