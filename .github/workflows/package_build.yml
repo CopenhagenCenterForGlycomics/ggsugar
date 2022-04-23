@@ -4,6 +4,7 @@ on: push
 
 jobs:
   build-sugars:
+    runs-on: ubuntu-latest
     container: rocker/tidyverse:4
     steps:
       - name: Checkout
