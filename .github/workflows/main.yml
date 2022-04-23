@@ -1,4 +1,4 @@
-name: Build webpack
+name: Build dependencies for ggsugar package
 
 on:
   push:
@@ -6,29 +6,7 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Install
-        run: |
-          cd js/sviewer
-          npm install
-
-      - name: Build
-        run: |
-          cd js/sviewer
-          ./node_modules/.bin/webpack
-          cp dist/sviewer-headless.bundle.js ../../inst/sviewer-headless.js
-
-      - name: AddBuiltWebpackFile
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Automated sviewer build
-          commit_user_name: ggsugar actions bot
-          file_pattern: inst/*.js
+  build-webpack:
+    uses: ./.github/workflows/webpack_build.yml
+  build-sugars:
+    uses: ./.github/workflows/package_build.yml

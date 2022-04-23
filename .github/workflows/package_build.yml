@@ -1,6 +1,8 @@
 name: Build package contents
 
-on: push
+on:
+  - workflow_call
+  - workflow_dispatch
 
 env: 
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
