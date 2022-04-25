@@ -9,4 +9,5 @@ jobs:
   build-webpack:
     uses: ./.github/workflows/webpack_build.yml
   build-sugars:
+    needs: build-webpack
     uses: ./.github/workflows/package_build.yml
