@@ -27,7 +27,7 @@ jobs:
 
       - name: Install required R packages
         run: |
-          R -e "devtools::install_github(\"sjp/grImport2\")"
+          R -e "devtools::install_github(\"hirenj/grImport2\")"
           R -e "devtools::install_github(\"sjp/grConvert\")"
 
       - name: Rebuild images
