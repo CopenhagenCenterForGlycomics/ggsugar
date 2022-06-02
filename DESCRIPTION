@@ -1,6 +1,6 @@
 Package: ggsugar
 Title: Geoms and stats for drawing sugars
-Version: 0.3
+Version: 0.3.1
 Authors@R: person("Hiren", "Joshi", email = "joshi@sund.ku.dk", role = c("aut", "cre"))
 Description: Grobs and geoms for drawing sugars
 Depends:
