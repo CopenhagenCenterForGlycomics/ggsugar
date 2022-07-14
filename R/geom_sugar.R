@@ -42,6 +42,9 @@ get_template_sugar_pre_gen = function(sugar) {
     sugar = with(nicnknames, setNames(tolower(sequence),nickname))[tolower(sugar)]
   }
 
+  r_version = paste('R',R.version$major,sep='.')
+  template_sugars = template_sugars_for_r[[r_version]]
+
   lower_names = setNames(template_sugars, tolower(names(template_sugars)))
   template_sugar = lower_names[tolower(sugar)]
 
@@ -116,7 +119,10 @@ generate_package_data = function() {
 
   glycans = read.delim('data/nicknames.tsv')
   template_sugars = unlist(sapply(glycans$sequence, function(seq) get_template_sugar(seq), simplify=F ),recursive=F)
-  usethis::use_data(template_sugars,internal=T,overwrite=T) 
+  r_version = paste('R',R.version$major,sep='.')
+
+  template_sugars_for_r[[ r_version ]] = template_sugars
+  usethis::use_data(template_sugars_for_r,internal=T,overwrite=T) 
   usethis::use_data(glycans,overwrite=T)
 }
 
