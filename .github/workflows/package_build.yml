@@ -31,7 +31,7 @@ jobs:
 
       - name: Rebuild images
         run: |
-          R -e 'devtools::load_all(); generate_package_data(); message("Completed build");'
+          R -e 'devtools::load_all(); message("Completed build");'
 
       - name: Fix repo ownership
         run: |
