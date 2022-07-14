@@ -23,11 +23,10 @@ jobs:
 
       - name: Install dependency R packages
         run: |
-          R -e "install.packages(c('XML','png','jpeg','base64enc','V8','plyr'))"
+          R -e "install.packages(c('XML','png','jpeg','base64enc','V8','plyr','grImport2'))"
 
       - name: Install required R packages
         run: |
-          R -e "devtools::install_github(\"hirenj/grImport2\")"
           R -e "devtools::install_github(\"sjp/grConvert\")"
 
       - name: Rebuild images

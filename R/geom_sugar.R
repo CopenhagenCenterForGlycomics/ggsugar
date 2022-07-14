@@ -99,7 +99,9 @@ seq_to_svg = function(seq) {
 #' @importFrom grImport2 grid.picture
 #' @importFrom grImport2 grid.symbols
 get_template_sugar <- function(sugar) {
-    if (requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE)) {
+  # There's a bug with the hirenj/grImport2 and the sjp/grImport2 with viewports, so we should use the 0.2.0 just for
+  # generating template sugars until the other bug in grImport2 can be patched in the 0.2.0 release line
+  if (requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE) && requireNamespace('grImport2',quietly=T) && packageVersion('grImport2') == '0.2.0') {
     get_template_sugar_dynamic(sugar)
   } else {
     get_template_sugar_pre_gen(sugar)
