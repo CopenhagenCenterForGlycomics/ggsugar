@@ -90,12 +90,17 @@ get_v8 = function() {
 }
 
 seq_to_svg = function(seq) {
-  v8_ctx = get_v8();
-  v8_ctx$assign("seq",seq);
-  v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg_temp',res) )",sep=""));
-  retval=get('svg_temp',envir=.GlobalEnv);
-  rm('svg_temp',envir=.GlobalEnv);
-  retval
+  v8_ctx = get_v8()
+  v8_ctx$assign("seq",seq)
+  v8_ctx$eval(paste("render_iupac_sugar(seq).then( res => console.r.assign('svg_temp',res) )",sep=""))
+  if (exists('svg_temp',envir=.GlobalEnv)) {
+    message("Generated sugar for ",seq)
+    retval=get('svg_temp',envir=.GlobalEnv)
+    rm('svg_temp',envir=.GlobalEnv)
+    retval
+  } else {
+    return()
+  }
 }
 
 
@@ -113,7 +118,7 @@ get_template_sugar <- function(sugar) {
 
 
 generate_package_data = function() {
-  if (!(requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE) && requireNamespace('grImport2',quietly=T) && packageVersion('grImport2') == '0.2.0') ) {
+  if (!(requireNamespace('V8',quietly = TRUE) && requireNamespace('grConvert',quietly = TRUE) && requireNamespace('grImport2',quietly=T)) ) {
     stop('V8 and grConvert packages need to be installed to generate package data')
   }
 

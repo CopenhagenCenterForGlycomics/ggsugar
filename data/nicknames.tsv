@@ -3,9 +3,9 @@ o-fuc	Fuc
 T	Gal(b1-3)GalNAc
 core2	Gal(b1-3)[GlcNAc(b1-6)]GalNAc
 core-sialyl-T	Gal(b1-3)[NeuAc(a2-6)]GalNAc
-core3 GlcNAc(b1-3)[GlcNAc(b1-6)]GalNAc
-extended-core3 Gal(b1-3)GlcNAc(b1-3)[Gal(b1-3)GlcNAc(b1-6)]GalNAc
-sialylated-extended-core3 NeuAc(a2-3)Gal(b1-3)GlcNAc(b1-3)[NeuAc(a2-3)Gal(b1-3)GlcNAc(b1-6)]GalNAc
+core3	GlcNAc(b1-3)[GlcNAc(b1-6)]GalNAc
+extended-core3	Gal(b1-3)GlcNAc(b1-3)[Gal(b1-3)GlcNAc(b1-6)]GalNAc
+sialylated-extended-core3	NeuAc(a2-3)Gal(b1-3)GlcNAc(b1-3)[NeuAc(a2-3)Gal(b1-3)GlcNAc(b1-6)]GalNAc
 collagen	Gal
 Tn	GalNAc
 o-glc	Glc
